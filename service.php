@@ -1,0 +1,1 @@
+<?php require($config->paths->templates."basic-page.php"); ?>
