@@ -15,7 +15,7 @@ function renderChildrenOf($pa, $root = null, $output = '', $level = 0) {
     $level++;
     foreach($pa as $child) {
         $class = '';
-        $has_children = ($child->id == "1018" || count($child->children('include=all'))) ? true : false;
+        $has_children = ($child->id == "1018" || $child->id == "1263" || count($child->children('include=all'))) ? true : false;
 
         if($has_children && $child !== $root) {
             if($level == 1){
@@ -43,8 +43,6 @@ function renderChildrenOf($pa, $root = null, $output = '', $level = 0) {
           
           //  check for special menu items
           if ($child->id == "1263") { //services main item
-            
-            $mainServices = $child->children;
 
             $output .= '<div class="megamenu"><div class="megamenu-row">';
             
@@ -57,20 +55,20 @@ function renderChildrenOf($pa, $root = null, $output = '', $level = 0) {
             
             // first column
             $output .= '<div class="col3">';
-            $output .= megaMenuList($mainServices[0]);
+            $output .= megaMenuServicesList('General');
             $output .= '</div>';
             // end first column
 
             // second column
             $output .= '<div class="col3">';
-            $output .= megaMenuList($mainServices[1]);
-            $output .= megaMenuList($mainServices[2]);
+            $output .= megaMenuServicesList('Cosmetic Dentistry');
+            $output .= megaMenuServicesList('Dental Restorations');
             $output .= '</div>';
             // end second column
 
             // third column
             $output .= '<div class="col3">';
-            $output .= megaMenuList($mainServices[3]);
+            $output .= megaMenuServicesList('Specialty');
             $output .= '</div>';
             // end third column
 
@@ -121,6 +119,25 @@ function renderChildrenOf($pa, $root = null, $output = '', $level = 0) {
     return "<ul class='$outerclass'>$output</ul>";
 }
 
+function megaMenuServicesList($serviceCategory, $output = '') {
+
+  $output .= '<h4 class="megamenu-col-title">'.$serviceCategory.'</h4>';            
+  $output .= '<ul class="list-dashed list-icon">';
+
+  $services = wire("pages")->find("template=service,service_category.title=".$serviceCategory);
+
+  foreach ($services as $item) {
+
+    $l2Class = ($item === wire("page")) ? "active" : "";
+    $output .= '<li class="'.$l2Class.'"><a href="'.$item->url.'">'.$item->title.'</a></li>';
+    
+  }
+  $output .= '</ul>';
+
+  return $output;
+
+}
+
 function megaMenuList($mainItem, $output = '') {
 
   $output .= '<h4 class="megamenu-col-title">'.$mainItem->title.'</h4>';            
@@ -158,7 +175,7 @@ function megaMenuBlogCatList($blogCatName, $limit = '10', $output = '') {
 }
 
 $root = $pages->get("1");
-$pa = $root->children("template!=blog-post|blog-categories|blog-tags|blog-archives|blog-authors|blog-comments");
+$pa = $root->children("template!=blog-post|blog-categories|blog-tags|blog-archives|blog-authors|blog-comments|service");
 $pa = $pa->prepend($root);
 
 ?>
